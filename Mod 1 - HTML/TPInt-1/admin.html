@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel administrativo</title>
+</head>
+
+<body>
+    <!--Encabezado-->
+    <header>
+        <h1>Panel de administración</h1>
+        <a href="index.html">Volver a la tienda</a>
+    </header>
+
+    <br>
+    
+    <!--Tabla-->
+    <table border="1"> <!--Borde simple-->
+        <!--Encabezado de la tabla-->
+        <thead>
+            <tr> <!--Fila-->
+                <th>ID</th> <!--Titulo de columnas-->
+                <th>Imagen</th>
+                <th>Nombre</th>
+                <th>Categoría</th>
+                <th>Precio</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+
+        <!--Cuerpo de la tabla-->
+        <tbody>
+            <tr> <!--Fila-->
+                <!--Producto 1-->
+                <td>1</td> <!--Dato-->
+                <td><img src="assets/img1.jpg" width="50"></td>
+                <td>Hamburguesa</td>
+                <td>Comida</td>
+                <td>$25000</td>
+                <td><a href="#">Editar</a> / <a href="#">Eliminar</a></td>
+            </tr>
+
+            <tr>
+                <!--Producto 2-->
+                <td>2</td>
+                <td><img src="assets/img2.jpg" width="50"></td>
+                <td>Pizza</td>
+                <td>Comida</td>
+                <td>$30000</td>
+                <td><a href="#">Editar</a> / <a href="#">Eliminar</a></td>
+            </tr>
+
+            <tr>
+                <!--Producto 3-->
+                <td>3</td>
+                <td><img src="assets/img3.jpg" width="50"></td>
+                <td>Bebida</td>
+                <td>Bebidas</td>
+                <td>$1500</td>
+                <td><a href="#">Editar</a> / <a href="#">Eliminar</a></td>
+            </tr>
+           
+            <tr>
+                <!--Producto 4-->
+                <td>4</td>
+                <td><img src="assets/img4.jpg" alt="Hamburguesa" width="50"></td>
+                <td>Papas Fritas</td>
+                <td>Comida</td>
+                <td>$10000</td>
+                <td><a href="#">Editar</a> / <a href="#">Eliminar</a></td>
+        </tr>
+        </tbody>
+    </table>
+
+    <br>
+
+    <h2>Formulario</h2>
+    <!--Inicio de formulario-->
+    <form action="#" method="post">
+
+        <fieldset> <!--Agrupa campos-->
+            <legend>Agregar Producto Rápido</legend> <!--Título dentro de la tabla-->
+            <!--Campo Nombre-->
+            <label for="nombre">Nombre:</label>
+            <input type="text" id="nombre" name="nombre" required><br><br>
+            <!--Campo Precio-->    
+            <label for="precio">Precio:</label>
+            <input type="number" id="precio" name="precio" required min="0"><br><br>
+            <!--Campo Categoría-->
+            <label for="categoria">Categoría:</label>
+            <!--Menú desplegable-->
+            <select id="categoria" name="categoria">
+                <option value="todas">Todas</option>
+                <option value="hamburguesas">Hamburguesas</option>
+                <option value="pizzas">Pizzas</option>
+                <option value="papas">Papas Fritas</option>
+                <option value="bebidas">Bebidas</option>
+            </select><br><br>
+            <!--Botón de agregar-->
+            <button type="submit">Agregar</button>
+        </fieldset>
+    </form>
+</body>
+</html>

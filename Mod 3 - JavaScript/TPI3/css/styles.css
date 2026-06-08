@@ -1,0 +1,29 @@
+
+article img {
+    width: 50%;
+    height: 50%;
+    object-fit: cover;
+}
+
+article {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    min-height: 350px;
+    break-inside: avoid;
+    margin-bottom: 20px; 
+}
+
+article h3,
+article p {
+    margin: 0;
+}
+
+button {
+    width: fit-content;
+}
+
+#contenedor-productos {
+    column-count: 2;
+    column-gap: 20px;
+}

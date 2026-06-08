@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Food Store</title>
+
+    <link rel="stylesheet" href="./css/styles.css">
+</head>
+
+<body>
+    <header>
+        <!--Encabezado-->
+
+        <!--Título-->
+        <h1>🍕food Store</h1>
+
+        <!--Barra de navegación-->
+        <nav>
+            <ul>
+                <li><a href="#">Inicio</a></li>
+                <li><a href="#">Mis Pedidos</a></li>
+                <li><a href="#">Carrito</a></li>
+                <li><a href="admin.html">Panel Admin</a> </li>   
+            </ul>
+        </nav>
+        <!--"#" enlace vacío-->
+    </header>
+    
+    <!--Barra lateral-->
+    <aside>
+        <h2>Categorías</h2> <!--Vaciamos la lista-->
+        <ul id="lista-categorias"></ul> 
+    </aside>    
+
+    <!--Contenido Principal-->
+    <main>
+        <!--Buscador-->
+        <form>
+            <input type="text" placeholder="Buscar productos...">
+            <button type="submit">Buscar</button>
+        </form>
+
+        <h2>Productos Destacados</h2>
+        <section id="contenedor-productos"></section>
+    </main>
+
+    <!--Pie de pagina-->
+    <footer>
+        <p>© 2024 Food Store. Todos los derechos reservados.</p>
+        <p>Contacto: info@foodstore.com</p>
+    </footer>
+    
+    <script src="./js/data.js"></script>
+    <script src="./js/main.js"></script>
+
+</body>
+</html>
+
