@@ -1,26 +1,30 @@
 package ar.edu.tup.programacion3.entities;
 
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.MappedSuperclass;
-import java.io.Serializable;
+import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
 @MappedSuperclass
-public abstract class Base implements Serializable {
+public abstract class Base {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-    private boolean eliminado = false;
-    private LocalDateTime createdAt = LocalDateTime.now();
+    protected Long id;
+    protected LocalDateTime createdAt;
+    protected boolean eliminado = false;
 
-    public Base() {}
-
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
-    public boolean isEliminado() { return eliminado; }
-    public void setEliminado(boolean eliminado) { this.eliminado = eliminado; }
-    public LocalDateTime getCreatedAt() { return createdAt; }
-    public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
+    @PrePersist
+    public void prePersist() {
+        createdAt = LocalDateTime.now();
+    }
+    public Long getId() {
+        return id;
+    }
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+    public boolean isEliminado() {
+        return eliminado;
+    }
+    public void setEliminado(Boolean eliminado) {
+        this.eliminado = eliminado;
+    }
 }
