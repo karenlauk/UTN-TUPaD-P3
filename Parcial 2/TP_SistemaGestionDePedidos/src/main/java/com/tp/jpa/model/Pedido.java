@@ -10,8 +10,7 @@ import java.util.Set;
 
 @Entity
 @Table(name = "pedidos")
-public class Pedido extends Base {
-
+public class Pedido extends Base implements Calculable {
     private LocalDate fecha;
 
     @Enumerated(EnumType.STRING)
@@ -26,29 +25,24 @@ public class Pedido extends Base {
     @JoinColumn(name = "usuario_id")
     private Usuario usuario;
 
-    // Cambiado de List a Set tal como pide el criterio C7
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
-    @JoinColumn(name = "pedido_id")
+    // Relación correcta usando Set para JPA (C7)
+    @OneToMany(mappedBy = "pedido", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private Set<DetallePedido> detalles = new HashSet<>();
 
     public Pedido() {}
 
-    // Lógica del negocio: Agregar detalle calculando subtotales
+    // Lógica del negocio organizada con la relación bidireccional asegurada
     public void addDetallePedido(int cantidad, Producto producto) {
-        DetallePedido detalle = new DetallePedido();
-        detalle.setCantidad(cantidad);
-        detalle.setProducto(producto);
-
-        // Calcular subtotal (Cantidad * Precio del producto)
-        double subtotal = cantidad * producto.getPrecio();
-        detalle.setSubtotal(subtotal);
+        // Usamos el constructor con parámetros que creamos en DetallePedido
+        DetallePedido detalle = new DetallePedido(cantidad, producto, this);
 
         this.detalles.add(detalle);
         calcularTotal();
     }
 
-    // Método requerido por el UML: Buscar detalle por producto
+    // Método requerido por el UML: Buscar detalle por producto (C1)
     public DetallePedido findDetallePedidoByProducto(Producto producto) {
+        if (detalles == null || producto == null) return null;
         for (DetallePedido detalle : detalles) {
             if (detalle.getProducto() != null && detalle.getProducto().getId().equals(producto.getId())) {
                 return detalle;
@@ -57,7 +51,7 @@ public class Pedido extends Base {
         return null;
     }
 
-    // Método requerido por el UML: Eliminar detalle por producto
+    // Método requerido por el UML: Eliminar detalle por producto (C1)
     public void deleteDetallePedidoByProducto(Producto producto) {
         DetallePedido detalleEncontrado = findDetallePedidoByProducto(producto);
         if (detalleEncontrado != null) {
@@ -66,11 +60,16 @@ public class Pedido extends Base {
         }
     }
 
-    // Recalcular el total sumando los subtotales de cada detalle
+    // Recalcular el total sumando los subtotales de cada detalle (Calculable)
+    @Override
     public void calcularTotal() {
         this.total = 0.0;
-        for (DetallePedido detalle : detalles) {
-            this.total += detalle.getSubtotal();
+        if (detalles != null) {
+            for (DetallePedido detalle : detalles) {
+                if (detalle.getSubtotal() != null) {
+                    this.total += detalle.getSubtotal();
+                }
+            }
         }
     }
 

@@ -10,8 +10,9 @@ public class Categoria extends Base {
 
     private String nombre;
     private String descripcion;
+    private boolean eliminado = false;
 
-    // mappedBy indica que el dueño de la relación es el atributo "categoria" en la clase Producto
+    // Corrección de la devolución C6 -> Agregación 1 a m
     @OneToMany(mappedBy = "categoria", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Set<Producto> productos = new HashSet<>();
 
@@ -28,6 +29,9 @@ public class Categoria extends Base {
 
     public String getDescripcion() { return descripcion; }
     public void setDescripcion(String descripcion) { this.descripcion = descripcion; }
+
+    public boolean isEliminado() { return eliminado; }
+    public void setEliminado(boolean eliminado) { this.eliminado = eliminado; }
 
     public Set<Producto> getProductos() { return productos; }
     public void setProductos(Set<Producto> productos) { this.productos = productos; }

@@ -7,7 +7,7 @@ import jakarta.persistence.*;
 public class DetallePedido extends Base {
 
     private Integer cantidad;
-    private Double subtotal;
+    private Double subtotal; // Correcto según el UML (C1)
 
     @ManyToOne
     @JoinColumn(name = "producto_id")
@@ -24,7 +24,15 @@ public class DetallePedido extends Base {
         this.cantidad = cantidad;
         this.producto = producto;
         this.pedido = pedido;
-        this.subtotal = cantidad * producto.getPrecio();
+        // Método seguro para calcular: evita NullPointerException si el producto viene vacío
+        this.subtotal = (cantidad != null && producto != null) ? cantidad * producto.getPrecio() : 0.0;
+    }
+
+    // Método sugerido para recalcular el subtotal si cambian los datos en caliente
+    public void calcularSubtotal() {
+        if (this.cantidad != null && this.producto != null) {
+            this.subtotal = this.cantidad * this.producto.getPrecio();
+        }
     }
 
     public Integer getCantidad() {
@@ -33,6 +41,7 @@ public class DetallePedido extends Base {
 
     public void setCantidad(Integer cantidad) {
         this.cantidad = cantidad;
+        calcularSubtotal(); // Se recalcula automáticamente si cambia la cantidad
     }
 
     public Double getSubtotal() {
@@ -49,6 +58,7 @@ public class DetallePedido extends Base {
 
     public void setProducto(Producto producto) {
         this.producto = producto;
+        calcularSubtotal(); // Se recalcula automáticamente si cambia el producto
     }
 
     public Pedido getPedido() {
