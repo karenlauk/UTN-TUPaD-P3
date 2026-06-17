@@ -2,9 +2,11 @@ package com.tp.jpa;
 
 import com.tp.jpa.model.Categoria;
 import com.tp.jpa.model.Producto;
+import com.tp.jpa.model.Usuario;
 import com.tp.jpa.repositories.CategoriaRepository;
 import com.tp.jpa.repositories.ProductoRepository;
-
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.Persistence;
 import java.util.List;
 import java.util.Scanner;
 
@@ -29,7 +31,7 @@ public class Main {
             System.out.println("8. Baja Logica de Producto");
             System.out.println("9. Submenu de Reportes"); // Se movió la consulta a un submenú
             System.out.println("0. Salir");
-            System.out.print("Seleccione una opción: ");
+            System.out.print("Seleccione una opcion: ");
 
             try {
                 opcion = scanner.nextInt();
@@ -37,7 +39,8 @@ public class Main {
 
                 switch (opcion) {
                     case 1:
-                        System.out.println("\n Alta de Categoría");
+                        System.out.println("\n --------------------------");
+                        System.out.println("Alta de Categoría");
                         String nombreCat = "";
                         // Validación de texto no vacío (C8)
                         while (nombreCat.trim().isEmpty()) {
@@ -70,7 +73,8 @@ public class Main {
                         break;
 
                     case 3:
-                        System.out.println("\n--- Modificación de Categoría ---");
+                        System.out.println("\n --------------------------");
+                        System.out.println("Modificación de Categoría ");
                         listarCategoríasAux(catRepo); // Lista las categorías activas antes de pedir ID (C9)
 
                         System.out.print("Ingrese ID de la Categoría a modificar: ");
@@ -101,7 +105,8 @@ public class Main {
                         break;
 
                     case 4:
-                        System.out.println("\n Baja Lógica de Categoría");
+                        System.out.println("\n --------------------------");
+                        System.out.println("Baja Lógica de Categoría");
                         listarCategoríasAux(catRepo); // Lista antes de pedir ID (C10)
 
                         System.out.print("Ingrese ID de la Categoría a dar de baja: ");
@@ -124,7 +129,8 @@ public class Main {
                         break;
 
                     case 5:
-                        System.out.println("\n--- Alta de Producto ---");
+                        System.out.println("\n --------------------------");
+                        System.out.println("Alta de Producto");
                         listarCategoríasAux(catRepo); // Lista las categorías para que el operador elija (C11)
 
                         System.out.print("Ingrese ID de la Categoría para el Producto: ");
@@ -181,7 +187,8 @@ public class Main {
                         break;
 
                     case 7:
-                        System.out.println("\n--- Modificación de Producto ---");
+                        System.out.println("\n --------------------------");
+                        System.out.println("Modificación de Producto");
                         listarProductosAux(prodRepo); // Lista los productos activos previamente (C12)
 
                         System.out.print("Ingrese ID del Producto a modificar: ");
@@ -225,7 +232,8 @@ public class Main {
                         break;
 
                     case 8:
-                        System.out.println("\n--- Baja Lógica de Producto ---");
+                        System.out.println("\n --------------------------");
+                        System.out.println("Baja Lógica de Producto");
                         listarProductosAux(prodRepo); // Lista los productos antes del ID (C13)
 
                         System.out.print("Ingrese ID del Producto a dar de baja: ");
@@ -248,7 +256,7 @@ public class Main {
                         break;
 
                     case 9:
-                        // Submenú de Reportes requerido por la rúbrica (C14)
+                        // Submenú de Reportes (C14)
                         mostrarSubmenuReportes(scanner, catRepo, prodRepo);
                         break;
 
@@ -288,28 +296,59 @@ public class Main {
         }
     }
 
-    // Submenú de reportes
+    // Submenú de reportes (C9)
     private static void mostrarSubmenuReportes(Scanner scanner, CategoriaRepository catRepo, ProductoRepository prodRepo) {
-        System.out.println("SUBMENÚ DE REPORTES");
+        System.out.println("\n SUBMENÚ DE REPORTES");
         System.out.println("1. Listar Productos por Categoría");
+        System.out.println("2. Ver Usuarios Base del Sistema (C9)");
         System.out.println("0. Volver al Menú Principal");
         System.out.print("Seleccione una opción: ");
         int opReporte = scanner.nextInt();
         scanner.nextLine();
 
         if (opReporte == 1) {
-            listarCategoríasAux(catRepo); // Muestra las categorías activas antes de filtrar (C14)
-            System.out.print("Ingrese ID de la Categoría a filtrar: ");
-            Long idFiltroCat = scanner.nextLong();
-            scanner.nextLine();
+            // 1. Primero traemos la lista de categorías activas
+            List<Categoria> categorias = catRepo.listarActivos();
 
-            List<Producto> prodFiltrados = prodRepo.buscarPorCategoria(idFiltroCat);
-            if (prodFiltrados.isEmpty()) {
-                System.out.println("No hay productos activos para esta categoría.");
+            // 2. CONTROL CLAVE: Si está vacía, avisamos y salimos del reporte
+            if (categorias.isEmpty()) {
+                System.out.println("No hay categorías activas registradas en el sistema. No se puede filtrar.");
             } else {
-                System.out.println("\n Productos de la Categoría ");
-                // Modificado: Incluye Precio y Stock en el listado impreso (C14)
-                prodFiltrados.forEach(p -> System.out.println("ID: " + p.getId() + " | Nombre: " + p.getNombre() + " | Precio: $" + p.getPrecio() + " | Stock: " + p.getStock()));
+                // 3. Si hay categorías, las mostramos y recién ahí pedimos el ID
+                System.out.println("Categorías Activas:");
+                categorias.forEach(c -> System.out.println("ID: " + c.getId() + " | Nombre: " + c.getNombre() + " | Desc: " + c.getDescripcion()));
+
+                System.out.print("\nIngrese ID de la Categoría a filtrar: ");
+                Long idFiltroCat = scanner.nextLong();
+                scanner.nextLine();
+
+                List<Producto> prodFiltrados = prodRepo.buscarPorCategoria(idFiltroCat);
+                if (prodFiltrados.isEmpty()) {
+                    System.out.println("No hay productos activos para esta categoría.");
+                } else {
+                    System.out.println("\n Productos de la Categoría ");
+                    prodFiltrados.forEach(p -> System.out.println("ID: " + p.getId() + " | Nombre: " + p.getNombre() + " | Precio: $" + p.getPrecio() + " | Stock: " + p.getStock()));
+                }
+            }
+        }
+        else if (opReporte == 2) {
+            EntityManager em = null;
+            try {
+                em = Persistence.createEntityManagerFactory("miUnidad").createEntityManager();
+
+                List<Usuario> usuarios = em.createQuery("SELECT u FROM Usuario u", Usuario.class).getResultList();
+
+                System.out.println("\n Usuarios Persistidos Base:");
+                if (usuarios.isEmpty()) {
+                    System.out.println("No hay usuarios registrados en la base de datos todavía.");
+                } else {
+                    usuarios.forEach(u -> System.out.println("ID: " + u.getId() + " | Nombre: " + u.getNombre() + " " + u.getApellido() + " | Mail: " + u.getMail() + " | Rol: " + u.getRol()));
+                }
+            } catch (Exception e) {
+                System.out.println("Error al conectar con la base de datos para listar usuarios.");
+                e.printStackTrace();
+            } finally {
+                if (em != null && em.isOpen()) em.close();
             }
         }
     }
